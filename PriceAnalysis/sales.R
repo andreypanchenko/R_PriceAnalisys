@@ -4,13 +4,13 @@ sales$ID_M <- as.integer(sales$ID_M)
 
 sales <- sales[order(sales$Money, decreasing = TRUE),]
 sales$MarketShareMoney <- sales$Money / sum(sales$Money) * 100
-sales$CumMarketShareMoney <- cumsum(sales$MarketShareMoney)
-len <- length(sales$CumMarketShareMoney)
+sales$CumulativeMarketShareMoney <- cumsum(sales$MarketShareMoney)
+len <- length(sales$CumulativeMarketShareMoney)
 temp <- vector()
 for(i in 1:len){
-  if(sales$CumMarketShareMoney[i] <= 80) {temp[i] = "A"
+  if(sales$CumulativeMarketShareMoney[i] <= 80) {temp[i] = "A"
   next} 
-  if(sales$CumMarketShareMoney[i] <= 95) {temp[i] = "B"
+  if(sales$CumulativeMarketShareMoney[i] <= 95) {temp[i] = "B"
   next}
   else {temp[i] = "C"}
 }  
@@ -19,13 +19,13 @@ sales$MoneyCategory <- temp
 
 sales <- sales[order(sales$Quantity, decreasing = TRUE),]
 sales$MarketShareQuantity <- sales$Quantity / sum(sales$Quantity) * 100
-sales$CumMarketShareQuantity <- cumsum(sales$MarketShareQuantity)
-len <- length(sales$CumMarketShareQuantity)
+sales$CumulativeMarketShareQuantity <- cumsum(sales$MarketShareQuantity)
+len <- length(sales$CumulativeMarketShareQuantity)
 temp <- vector()
 for(i in 1:len){
-  if(sales$CumMarketShareQuantity[i] <= 70) {temp[i] = "A"
+  if(sales$CumulativeMarketShareQuantity[i] <= 70) {temp[i] = "A"
   next} 
-  if(sales$CumMarketShareQuantity[i] <= 90) {temp[i] = "B"
+  if(sales$CumulativeMarketShareQuantity[i] <= 90) {temp[i] = "B"
   next}
   else {temp[i] = "C"}
 }  
@@ -33,20 +33,22 @@ sales$QuantityCategory <- temp
 
 
 sales <- sales[order(sales$Money, decreasing = TRUE),]
-sales <- data.frame(sales[1], sales[4], sales[6], sales[7], sales[9])
+#sales <- data.frame(sales[1], sales[4], sales[6], sales[7], sales[9])
 
 
 temp <- vector()
 for(i in 1:len){
-  if(i <= 100){temp[i] = "TOP 100" 
+  if(i <= 100){temp[i] = "1. TOP 100" 
   next}
-  if(i <= 1000){temp[i] = "TOP 1000"
+  if(i <= 1000){temp[i] = "2. TOP 1000"
   next}
-  if(i <= 2500){temp[i] = "TOP 2500"
+  if(i <= 2500){temp[i] = "3. TOP 2500"
   next}
-  else {temp[i] = "more than 2500"}
+  else {temp[i] = "4. more than 2500"}
 }
 
 sales$TOP <- temp
+
+sales$Rank_in_Market <- 1:length(sales$ID_M)
 
 rm(i,len,temp)

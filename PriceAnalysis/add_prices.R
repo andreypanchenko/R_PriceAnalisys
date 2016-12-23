@@ -6,13 +6,12 @@ d3 <- read.xlsx("~/R/PriceAnalysis/data_prices/d3.xlsx", 1)
 d4 <- read.xlsx("~/R/PriceAnalysis/data_prices/d4.xlsx", 1)
 
 
-d2 <- merge(x = d2.1, y = d2.2, by = 'M_id')
+d2 <- merge(x = d2.1, y = d2.2, by = 'M_id', all = TRUE)
 prices <- merge(x = d1, y = d2, by = 'M_id')
 prices <- merge(x = prices, y = d3, by = 'M_id')
 prices <- merge(x = prices, y = d4, by = 'M_id')
 
-
-rm(d1, d2, d2.1, d2.2, d3, d4)
+rm(d1, d2,  d2.1, d2.2, d3, d4)
 
 colnames(prices)[2] <- "DISTR.1"
 colnames(prices)[3] <- "DISTR.2.1"
@@ -51,6 +50,7 @@ prices <-
   filter(SinglePriceFlag==0)
 
 
+
 # Add quantile
 prices$QUANTILE_AVG <- addQuantileColumn(prices$AVG_PRICE, 0.2)
 
@@ -60,4 +60,13 @@ prices$PriceGroup <- addPriceGroups(prices$AVG_PRICE)
 
   
 # Delete excess objects
-rm(sales, avgPrice, replaceZero, replaceNA, singlePrice, addQuantileColumn, addMarketShare, addPriceGroups)
+# rm(avgPrice, replaceZero, replaceNA, singlePrice, addQuantileColumn, addMarketShare, addPriceGroups)
+
+# Make straight table
+temp_p1 <- data.frame('M_id' = prices$M_id, 'Price' = prices$DISTR.1, 'PriceGroup' = prices$PriceGroup, 'AVG_PRICE' = prices$AVG_PRICE, 'DISTR' = "Distr_1")
+temp_p2 <- data.frame('M_id' = prices$M_id, 'Price' = prices$DISTR.2, 'PriceGroup' = prices$PriceGroup, 'AVG_PRICE' = prices$AVG_PRICE, 'DISTR' = "Distr_2")
+temp_p3 <- data.frame('M_id' = prices$M_id, 'Price' = prices$DISTR.3, 'PriceGroup' = prices$PriceGroup, 'AVG_PRICE' = prices$AVG_PRICE, 'DISTR' = "Distr_3")
+temp_p4 <- data.frame('M_id' = prices$M_id, 'Price' = prices$DISTR.4, 'PriceGroup' = prices$PriceGroup, 'AVG_PRICE' = prices$AVG_PRICE, 'DISTR' = "DISTR.4")
+prices_straight <- rbind.data.frame(temp_p1, temp_p2, temp_p3)
+
+rm(temp_p1, temp_p2, temp_p3, temp_p4)

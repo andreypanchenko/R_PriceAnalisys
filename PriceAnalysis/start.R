@@ -3,48 +3,24 @@ library(dplyr)
 library(ggplot2)
 library(reshape)
 library(openxlsx)
+library(mgcv)
 
 # Load functions
 source("functions.R")
-
 # Load Data
-source("add_prices.R")
 source("sales.R")
+source("add_prices.R")
+
 
 # Add info from "sales" in price table
 prices_data <- merge(x = prices, y = sales, by.x = 'M_id', by.y = 'ID_M', all.x = TRUE)
+prices_data_straight <- merge(x = prices_straight, y = sales, by.x = 'M_id', by.y = 'ID_M', all.x = TRUE)
 
-prices_data <-
-  prices_data%>%
+### BOX PLOTS Built ###
+prices_data_straight<-
+  prices_data_straight%>%
   filter(MoneyCategory == "A")%>%
-  filter(between(AVG_PRICE, 50, 400))
+  filter(TOP == "1. TOP 100" | TOP == "2. TOP 1000")
+source("box_plot.R")
+### BOX PLOTS End ###
 
-
-
-# START ANALYSIS
-attach(prices_data)
-p1<- qplot(PriceGroup
-      , DISTR.1
-      , data = prices_data
-      , fill = PriceGroup
-      , geom = c("boxplot", "jitter"))
-
-p2<- qplot(PriceGroup
-           , DISTR.2
-           , data = prices_data
-           , fill = PriceGroup
-           , geom = c("boxplot", "jitter"))
-
-p3<- qplot(PriceGroup
-           , DISTR.3
-           , data = prices_data
-           , fill = PriceGroup
-           , geom = c("boxplot", "jitter"))
-
-p4<- qplot(PriceGroup
-           , DISTR.4
-           , data = prices_data
-           , fill = PriceGroup
-           , geom = c("boxplot", "jitter"))
-
-mp <- multiplot(p1, p2, p3, p4, cols = 2)
